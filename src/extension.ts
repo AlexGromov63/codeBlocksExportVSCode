@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 
 const blocks: TextBlock[] = [];
 
@@ -29,7 +28,7 @@ function CreateFile(blocks: TextBlock[], output: vscode.Uri) {
 	for (var t of blocks) {
 		output_content += `
 # **File:** ${t.filepath} \n
-## **Lines** ${t.text_begin} - ${t.text_end} \n
+## **Lines:** ${t.text_begin} - ${t.text_end} \n
 \`\`\`
 ${t.selected_text}
 \`\`\`
@@ -127,7 +126,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		if (blocks.length > 20) {
 			logChannel.appendLine(`Too much code blocks. First one was deleted`);
-			blocks.pop()
+			blocks.slice(1);
 		}
 		logChannel.appendLine(`Added ${blocks.length + 1} code block`);
 		blocks.push(NewText);
@@ -139,6 +138,15 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 		SaveFileBlock();
+	})
+
+	const clearSavedBlocks = vscode.commands.registerCommand('codeblocksexport.clearBlocks', () => {
+		blocks.length = 0;
+		logChannel.appendLine('Memory cleared.');
+	})
+	const clearLastBlocks = vscode.commands.registerCommand('codeblocksexport.clearLastBlock', () => {
+		blocks.pop();
+		logChannel.appendLine('Last saved block cleared.');
 	})
 
 }

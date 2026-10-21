@@ -14,16 +14,20 @@
   "contributes": {
     "commands": [
       {
-        "command": "codeblocksexport.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "codeblocksexport.addSelection",
-        "title": "Code Block Export: Add Selection"
+        "title": "Code Blocks Export: Add Selection"
       },
       {
         "command": "codeblocksexport.saveFile",
-        "title": "Code Block Export: Export to .md"
+        "title": "Code Blocks Export: Export to .md"
+      },
+      {
+        "command": "codeblocksexport.clearBlocks",
+        "title": "Code Blocks Export: Clear memory"
+      },
+      {
+        "command": "codeblocksexport.clearLastBlock",
+        "title": "Code Blocks Export: Delete last saved block"
       }
     ]
   },
