@@ -15,7 +15,7 @@ interface TextBlock {
 function showInputBox() {
 	const result = vscode.window.showInputBox({
 		value: 'CodeBlocks.md',
-		valueSelection: [2, 4],
+		valueSelection: [0, 13],
 		placeHolder: 'Enter filename'
 	});
 	
