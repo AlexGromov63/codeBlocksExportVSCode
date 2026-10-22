@@ -10,6 +10,7 @@ interface TextBlock {
 	text_end: number;
 	selected_text: string;
 	filepath: string;
+	language: string;
 };
 
 function showInputBox() {
@@ -22,30 +23,30 @@ function showInputBox() {
 	return result;
 }
 
-function CreateFile(blocks: TextBlock[], output: vscode.Uri) {
+async function CreateFile(blocks: TextBlock[], output: vscode.Uri) {
 	const output_path = output;
 	var output_content = '';
 	for (var t of blocks) {
 		output_content += `
 # **File:** ${t.filepath} \n
 ## **Lines:** ${t.text_begin} - ${t.text_end} \n
-\`\`\`
+\`\`\`${t.language}
 ${t.selected_text}
 \`\`\`
 \n`
 	}
-	vscode.workspace.fs.writeFile(output_path, Buffer.from(output_content));
-	
-	logChannel.appendLine(`File ${output} successfully written!`);
+	try {
+		await vscode.workspace.fs.writeFile(output_path, Buffer.from(output_content));
+		logChannel.appendLine(`File ${output} successfully written!`);
+		return true;
+	} catch (error) {
+		vscode.window.showErrorMessage('Failed to save file')
+		logChannel.appendLine(`Failed to save ${output}`);
+		return false;
+	}
 }
 
 async function SaveFileBlock() {
-	var filename = 'CodeBlocks.md';
-	if (!vscode.workspace.workspaceFolders) {
-		vscode.window.showErrorMessage('Error finding root of workspace');
-		return;
-	}
-	const filepath = vscode.workspace.workspaceFolders[0].uri;
 	const items: vscode.QuickPickItem[] = [
             { label: 'Save to workspace root', description: 'Save file to root directory of your workspace.',},
             { label: 'Save to...', description: 'Pick directory where your file will be saved.' },
@@ -72,8 +73,16 @@ async function SaveFileBlock() {
 			vscode.window.showErrorMessage('Can\'t save file. Try again.');
 			return;
 		}
-		CreateFile(blocks, file_open);
+		const saved = await CreateFile(blocks, file_open);
+		if (!saved) {
+			return;
+		}
 	} else {
+		if (!vscode.workspace.workspaceFolders) {
+			vscode.window.showErrorMessage('Error finding root of workspace');
+			return;
+		}
+		const filepath = vscode.workspace.workspaceFolders[0].uri;
 		const filename_input = await showInputBox();
 		if (!filename_input) {
 			vscode.window.showErrorMessage('Can\'t save file. Try again.');
@@ -83,7 +92,10 @@ async function SaveFileBlock() {
 			filepath,
 			filename_input
 		)
-		CreateFile(blocks, file_open);
+		const saved = await CreateFile(blocks, file_open);
+		if (!saved) {
+			return;
+		}
 	}
 	blocks.length = 0;
 }
@@ -122,11 +134,12 @@ export function activate(context: vscode.ExtensionContext) {
 			text_begin: text_begin,
 			text_end: text_end,
 			selected_text: selected_text,
+			language: editor.document.languageId
 		}
 
-		if (blocks.length > 20) {
+		if (blocks.length >= 20) {
 			logChannel.appendLine(`Too much code blocks. First one was deleted`);
-			blocks.slice(1);
+			blocks.splice(0, 1);
 		}
 		logChannel.appendLine(`Added ${blocks.length + 1} code block`);
 		blocks.push(NewText);
