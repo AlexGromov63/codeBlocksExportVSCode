@@ -1,8 +1,9 @@
 # Code Blocks Export
-## Description
-This extension allows you to select multiple blocks of code to export them in markdown file. 
- 
-## Example of exported file:
+Громов Алексей Алексеевич, М3102
+## Описание
+Собирает блоки кода из разных файлов и экспортирует в один Markdown документ с указанием пути к файлу, его имени, языка программирования и диапазона выделенных строк в блоке.
+
+## Шаблон выходного файла:
 
 ### **File:** filename.cpp
 #### **Lines:** 10 - 12
@@ -18,26 +19,26 @@ int main() {
 <your code here...>
 ```
 
-## How to use
+## Как использовать
 MacOS: **Cmd** + **Shift** + **P**  
 Windows/Linux: **Ctrl** + **Shift** + **P**  
-Or you can use **F1**  
-Then print `"Code Blocks Export"` and choose command
+Или **F1**  
+Далее пишете `"Code Blocks Export"` и выбираете нужную команду.
 
-## How it works
-Extension contains two functions:
+## Функции
+Расширение состоит из четырех функций:
 * **Code Blocks Export: Add Selection**  
-    Allowes you to save selected code to array of extension.
+    Создает объект выделенного блока кода и сохраняет в памяти.
 * **Code Blocks Export: Export to .md**  
-    Exports all saved blocks to Markdown.  
-    Options:
+    Экспортирует все сохраненные блоки кода в Markdown.  
+    Опции:
     1. Save to workspace root  
-        Saves markdown file to root directory of your workspace in VSCode.  
-        Then asks you to print name of file.
+        Сохраняет файл в корневом каталоге рабочего пространства VSCode.  
+        Далее требует название для нового файла.
     2. Save to...  
-        Opens window to choose where to save your file.
+        Открывает окно для выбора каталога и имени для сохраняемого файла.
 * **Code Blocks Export: Clear memory**  
-    Clear all saved blocks of code.
+    Очищает все сохраненные в памяти блоки кода.
 * **Code Blocks Export: Delete last saved block**
-    Deletes last added block of code.
+    Удаляет последний добавленный блок кода.
     
